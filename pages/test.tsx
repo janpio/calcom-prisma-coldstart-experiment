@@ -25,7 +25,7 @@ export default function Home({ apps }: InferGetServerSidePropsType<typeof getSer
 
       <main>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          empty array
         </h1>
 
         <p>
