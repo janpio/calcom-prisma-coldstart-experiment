@@ -6,7 +6,8 @@ const { Client } = require('pg')
 export const getServerSideProps: GetServerSideProps<{ apps: any[] }> = async (context: GetServerSidePropsContext) => {
   const client = new Client(process.env.DATABASE_URL)
   await client.connect()
-  const apps = await client.query(`SELECT * FROM "App"`)
+  await client.query(`SELECT * FROM "App"`)
+  const apps: any[] = []
 
   return {
     props: {
