@@ -14,6 +14,21 @@ export const getServerSideProps: GetServerSideProps<{ apps: any[], timings: any[
   const data = await client.query(`SELECT * FROM "App"`)
   const time_6 = performance.now()
   const apps: any[] = data.rows
+  const timings = [        
+    time_2 - time_1,
+    time_4 - time_3,
+    time_5 - time_4,
+    time_6 - time_5,
+  ]
+  const times = [
+    time_1,
+    time_2,
+    time_3,
+    time_4,
+    time_5,
+    time_6
+  ]
+  console.log({ timings, times })
 
   return {
     props: {
@@ -22,20 +37,8 @@ export const getServerSideProps: GetServerSideProps<{ apps: any[], timings: any[
         createdAt: new Date(app.createdAt).toString(),
         updatedAt: new Date(app.updatedAt).toString()
       })),
-      timings: [        
-        time_2 - time_1,
-        time_4 - time_3,
-        time_5 - time_4,
-        time_6 - time_5,
-      ],
-      times: [
-        time_1,
-        time_2,
-        time_3,
-        time_4,
-        time_5,
-        time_6
-      ]
+      timings: timings,
+      times: times
     }
   }
 }
