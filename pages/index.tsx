@@ -1,17 +1,16 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import type { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
-import { PrismaClient, App } from "@prisma/client";
+const { Client } = require('pg')
 
-export const getServerSideProps: GetServerSideProps<{ apps: (Omit<App, "createdAt" | "updatedAt"> & {
-  createdAt: string;
-  updatedAt: string;
-})[] }> = async (context: GetServerSidePropsContext) => {
-  const prisma = new PrismaClient()
-  const apps = await prisma.app.findMany();
+export const getServerSideProps: GetServerSideProps<{ apps: any[] }> = async (context: GetServerSidePropsContext) => {
+  const client = new Client(process.env.DATABASE_URL)
+  await client.connect()
+  const apps = await client.query(`SELECT * FROM "App"`)
+
   return {
     props: {
-      apps: apps.map( app => ({
+      apps: apps.map( (app: any) => ({
         ...app,
         createdAt: new Date(app.createdAt).toString(),
         updatedAt: new Date(app.updatedAt).toString()
