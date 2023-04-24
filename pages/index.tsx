@@ -7,7 +7,7 @@ export const getServerSideProps: GetServerSideProps<{ apps: any[] }> = async (co
   const client = new Client(process.env.DATABASE_URL)
   await client.connect()
  const data = await client.query(`SELECT * FROM "App"`)
- console.log({ data })
+ console.log(data.rows)
   const apps: any[] = []
 
   return {
