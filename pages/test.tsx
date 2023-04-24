@@ -1,12 +1,18 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import type { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+const time_1 = performance.now()
 const { Client } = require('pg')
+const time_2 = performance.now()
 
-export const getServerSideProps: GetServerSideProps<{ apps: any[] }> = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<{ apps: any[], timings: any[], times: any[] }> = async (context: GetServerSidePropsContext) => {
+  const time_3 = performance.now()
   const client = new Client(process.env.DATABASE_URL)
+  const time_4 = performance.now()
   await client.connect()
+  const time_5 = performance.now()
   const data = await client.query(`SELECT * FROM "App"`)
+  const time_6 = performance.now()
   const apps: any[] = data.rows
 
   return {
@@ -16,11 +22,26 @@ export const getServerSideProps: GetServerSideProps<{ apps: any[] }> = async (co
         createdAt: new Date(app.createdAt).toString(),
         updatedAt: new Date(app.updatedAt).toString()
       })),
+      timings: [        
+        time_2 - time_1,
+        time_4 - time_3,
+        time_5 - time_4,
+        time_6 - time_5,
+      ],
+      times: [
+        time_1,
+        time_2,
+        time_3,
+        time_4,
+        time_5,
+        time_6
+      ]
     }
   }
 }
 
-export default function Home({ apps }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+
+export default function Home({ apps, timings, times }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div className={styles.container}>
       <Head>
@@ -35,6 +56,16 @@ export default function Home({ apps }: InferGetServerSidePropsType<typeof getSer
 
         <p>
           {apps.map( app => 
+            JSON.stringify(app)
+          )}
+        </p>
+        <p>
+          {timings.map( app => 
+            JSON.stringify(app)
+          )}
+        </p>
+        <p>
+          {times.map( app => 
             JSON.stringify(app)
           )}
         </p>
