@@ -1,18 +1,43 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+import type { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+const { Client } = require('pg')
 
-export default function Home() {
+export const getServerSideProps: GetServerSideProps<{ apps: any[] }> = async (context: GetServerSidePropsContext) => {
+  const client = new Client(process.env.DATABASE_URL)
+  await client.connect()
+  const data = await client.query(`SELECT * FROM "App"`)
+  const apps: any[] = data.rows
+
+  return {
+    props: {
+      apps: apps.map( (app: any) => ({
+        ...app,
+        createdAt: new Date(app.createdAt).toString(),
+        updatedAt: new Date(app.updatedAt).toString()
+      })),
+    }
+  }
+}
+
+export default function Home({ apps }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>pg</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          pg
         </h1>
+
+        <p>
+          {apps.map( app => 
+            JSON.stringify(app)
+          )}
+        </p>
 
         <p className={styles.description}>
           Get started by editing <code>pages/index.js</code>
